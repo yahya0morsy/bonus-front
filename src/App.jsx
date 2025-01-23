@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from '../src/LoginPage.jsx';
 import BalancePage from '../src/BalancePage.jsx';
 import MasterPage from '../src/master.jsx'; // Import the MasterPage component
