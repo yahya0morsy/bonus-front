@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner'; // Import the LoadingSpinner component
 
-const backendUrl = 'https://bonus-back.vercel.apps';
+const backendUrl = 'https://bonus-back.vercel.app';
 
 function MasterPage() {
   const [masterKey, setMasterKey] = useState('');
