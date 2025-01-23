@@ -132,7 +132,7 @@ function RegisterPage() {
           <p className="text-gray-400">
             Already have an account?{' '}
             <a
-              href="/login"
+              href="/"
               className="text-blue-500 hover:text-blue-400 transition duration-200"
             >
               Login here
