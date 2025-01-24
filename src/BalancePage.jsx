@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../src/LoadingSpinner';
 import QRCodeScanner from '../src/qr.jsx'; // Import the QRCodeScanner component
 
-const backendUrl = 'http://localhost:5000';
+const backendUrl = 'https://bonus-back.vercel.app';
 
 function BalancePage() {
   const [balance, setBalance] = useState(null);
