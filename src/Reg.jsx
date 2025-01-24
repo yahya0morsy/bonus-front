@@ -39,7 +39,7 @@ function RegisterPage() {
 
       // Redirect to login page after 2 seconds
       setTimeout(() => {
-        navigate('/');
+        navigate('/login');
       }, 2000);
     } catch (error) {
       setError(error.response?.data?.error || 'Failed to register. Please try again.');
