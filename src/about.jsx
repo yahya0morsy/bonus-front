@@ -96,14 +96,6 @@ function AboutPage() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-6 flex items-center justify-center">
-        <div className="text-center text-red-500">{error}</div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
@@ -192,6 +184,7 @@ function AboutPage() {
             Change Password
           </button>
 
+          {/* Always show the logout button */}
           <button
             onClick={() => setShowLogoutConfirmation(true)}
             className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-200 text-sm sm:text-base md:py-3 md:px-6 lg:text-lg"
