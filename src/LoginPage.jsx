@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from './LoadingSpinner'; // Import the LoadingSpinner component
 
 const backendUrl = 'https://bonus-back.vercel.app';
 
@@ -8,6 +9,7 @@ function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -19,6 +21,9 @@ function LoginPage() {
       navigate('/master');
       return; // Exit the function early
     }
+
+    setLoading(true); // Start loading
+    setError(''); // Clear any previous errors
 
     try {
       const response = await axios.post(`${backendUrl}/login`, {
@@ -33,11 +38,16 @@ function LoginPage() {
       navigate('/balance');
     } catch (error) {
       setError(error.response?.data?.error || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-4">
+      {/* Show LoadingSpinner when loading is true */}
+      {loading && <LoadingSpinner />}
+
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
@@ -65,14 +75,16 @@ function LoginPage() {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 mb-4"
+            disabled={loading} // Disable the button when loading
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'} {/* Change button text when loading */}
           </button>
 
           {/* Register Button */}
           <button
             onClick={() => navigate('/register')} // Redirect to the Register page
             className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200"
+            disabled={loading} // Disable the button when loading
           >
             Register
           </button>
