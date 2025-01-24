@@ -9,9 +9,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/balance" element={<BalancePage />} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        
         {/* Master Page */}
         <Route path="/master" element={<MasterPage />} />
         <Route path="/register" element={<RegisterPage />} />

@@ -51,7 +51,7 @@ function AboutPage() {
   // Handle logout
   const handleLogout = () => {
     localStorage.removeItem('sessionKey'); // Clear the session key
-    navigate('/login'); // Redirect to the login page
+    navigate('/'); // Redirect to the login page
   };
 
   // Handle password change
