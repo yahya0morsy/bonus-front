@@ -86,29 +86,40 @@ function LoginPage() {
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Username</label>
+            <label
+              className={`block text-sm font-medium mb-2 ${loading ? 'opacity-50' : ''}`} // Dim the label during loading
+            >
+              Username
+            </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 disabled:opacity-50"
               required
+              disabled={loading} // Disable input during loading
             />
           </div>
           <div className="mb-6 relative">
-            <label className="block text-sm font-medium mb-2">Password</label>
+            <label
+              className={`block text-sm font-medium mb-2 ${loading ? 'opacity-50' : ''}`} // Dim the label during loading
+            >
+              Password
+            </label>
             <input
               type={showPassword ? 'text' : 'password'} // Toggle input type
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 disabled:opacity-50"
               required
+              disabled={loading} // Disable input during loading
             />
             {/* Toggle button to show/hide password */}
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-400 hover:text-gray-300 mt-7"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-400 hover:text-gray-300 mt-7 disabled:opacity-50"
+              disabled={loading} // Disable button during loading
             >
               {showPassword ? (
                 <svg
@@ -143,7 +154,7 @@ function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 mb-4"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 mb-4 disabled:opacity-50"
             disabled={loading} // Disable the button when loading
           >
             {loading ? 'Logging in...' : 'Login'} {/* Change button text when loading */}
@@ -152,7 +163,7 @@ function LoginPage() {
           {/* Register Button */}
           <button
             onClick={() => navigate('/register')} // Redirect to the Register page
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200"
+            className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200 disabled:opacity-50"
             disabled={loading} // Disable the button when loading
           >
             Register
