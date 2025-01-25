@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner'; // Import the LoadingSpinner component
@@ -12,6 +12,38 @@ function LoginPage() {
   const [loading, setLoading] = useState(false); // Add loading state
   const [showPassword, setShowPassword] = useState(false); // Add showPassword state
   const navigate = useNavigate();
+
+  // Check if the user is already logged in when the component mounts
+  useEffect(() => {
+    const checkSession = async () => {
+      const sessionKey = localStorage.getItem('sessionKey');
+
+      if (sessionKey) {
+        setLoading(true); // Start loading
+        try {
+          // Check if the session key is valid
+          const response = await axios.post(`${backendUrl}/validate-session`, {
+            key: sessionKey,
+          });
+
+          if (response.data.isValid) {
+            // Redirect to the balance page if the session is valid
+            navigate('/balance');
+          } else {
+            // Clear the invalid session key
+            localStorage.removeItem('sessionKey');
+          }
+        } catch (error) {
+          console.error('Error checking session:', error);
+          localStorage.removeItem('sessionKey'); // Clear the session key on error
+        } finally {
+          setLoading(false); // Stop loading
+        }
+      }
+    };
+
+    checkSession();
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
