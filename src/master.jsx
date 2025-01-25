@@ -15,6 +15,10 @@ function MasterPage() {
   const [action, setAction] = useState('add'); // 'add' or 'subtract'
   const [newGrade, setNewGrade] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [newUsername, setNewUsername] = useState(''); // State for updating username
+  const [newDisplayName, setNewDisplayName] = useState(''); // State for updating display name
+  const [newPhoneNumber, setNewPhoneNumber] = useState(''); // State for updating phone number
+  const [userData, setUserData] = useState(null); // State for storing user data
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -122,6 +126,101 @@ function MasterPage() {
     }
   };
 
+  // Search for user data by username or phone number
+  const searchUserData = async () => {
+    if (!masterKey || (!username && !phoneNumber)) {
+      setError('Master key and username/phone number are required.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(`${backendUrl}/users/search`, {
+        masterKey,
+        username,
+        phoneNumber,
+      });
+      setUserData(response.data.user); // Store user data
+      setError('');
+      setSuccess('User data fetched successfully.');
+    } catch (error) {
+      setError(error.response?.data?.error || 'Failed to fetch user data.');
+      setUserData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update username by master key
+  const updateUsername = async () => {
+    if (!masterKey || !username || !newUsername) {
+      setError('All fields are required.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(`${backendUrl}/users/admin/update-credentials`, {
+        masterKey,
+        username,
+        newUsername,
+      });
+      setUsername(response.data.user.username); // Update the username in the state
+      setError('');
+      setSuccess('Username updated successfully.');
+    } catch (error) {
+      setError(error.response?.data?.error || 'Failed to update username.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update display name by master key
+  const updateDisplayName = async () => {
+    if (!masterKey || !username || !newDisplayName) {
+      setError('All fields are required.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(`${backendUrl}/users/admin/update-display-name`, {
+        masterKey,
+        username,
+        newDisplayName,
+      });
+      setError('');
+      setSuccess('Display name updated successfully.');
+    } catch (error) {
+      setError(error.response?.data?.error || 'Failed to update display name.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update phone number by master key
+  const updatePhoneNumber = async () => {
+    if (!masterKey || !username || !newPhoneNumber) {
+      setError('All fields are required.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(`${backendUrl}/users/admin/update-phone-number`, {
+        masterKey,
+        username,
+        newPhoneNumber,
+      });
+      setError('');
+      setSuccess('Phone number updated successfully.');
+    } catch (error) {
+      setError(error.response?.data?.error || 'Failed to update phone number.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle QR code scan
   const handleScan = (data) => {
     setUsername(data); // Set the scanned data as the username
@@ -216,6 +315,85 @@ function MasterPage() {
             </div>
           </div>
         )}
+
+        {/* Search User Data Section */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">Search User Data</h2>
+          <button
+            onClick={searchUserData}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Search User Data'}
+          </button>
+          {userData && (
+            <div className="mt-4">
+              <p className="text-gray-300">Display Name: <span className="font-semibold text-gray-100">{userData.displayName}</span></p>
+              <p className="text-gray-300">Username: <span className="font-semibold text-gray-100">{userData.username}</span></p>
+              <p className="text-gray-300">Phone Number: <span className="font-semibold text-gray-100">{userData.phoneNumber}</span></p>
+            </div>
+          )}
+        </div>
+
+        {/* Update Username Section */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">Update Username</h2>
+          <input
+            type="text"
+            value={newUsername}
+            onChange={(e) => setNewUsername(e.target.value)}
+            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-gray-500 text-gray-200 mb-4"
+            placeholder="Enter new username"
+            required
+          />
+          <button
+            onClick={updateUsername}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Update Username'}
+          </button>
+        </div>
+
+        {/* Update Display Name Section */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">Update Display Name</h2>
+          <input
+            type="text"
+            value={newDisplayName}
+            onChange={(e) => setNewDisplayName(e.target.value)}
+            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-gray-500 text-gray-200 mb-4"
+            placeholder="Enter new display name"
+            required
+          />
+          <button
+            onClick={updateDisplayName}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Update Display Name'}
+          </button>
+        </div>
+
+        {/* Update Phone Number Section */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">Update Phone Number</h2>
+          <input
+            type="text"
+            value={newPhoneNumber}
+            onChange={(e) => setNewPhoneNumber(e.target.value)}
+            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-gray-500 text-gray-200 mb-4"
+            placeholder="Enter new phone number"
+            required
+          />
+          <button
+            onClick={updatePhoneNumber}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Update Phone Number'}
+          </button>
+        </div>
 
         {/* Fetch Balance Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
