@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner'; // Import the LoadingSpinner component
+import QRCodeScanner from '../src/qr.jsx'; // Import the QRCodeScanner component
 
 const backendUrl = 'https://bonus-back.vercel.app';
 
@@ -19,6 +20,7 @@ function MasterPage() {
   const [loading, setLoading] = useState(false);
   const [showMasterKey, setShowMasterKey] = useState(false); // Toggle for master key visibility
   const [showNewPassword, setShowNewPassword] = useState(false); // Toggle for new password visibility
+  const [showScanner, setShowScanner] = useState(false); // State to toggle QR scanner
 
   // Fetch user balance and grade
   const fetchBalance = async () => {
@@ -120,6 +122,12 @@ function MasterPage() {
     }
   };
 
+  // Handle QR code scan
+  const handleScan = (data) => {
+    setUsername(data); // Set the scanned data as the username
+    setShowScanner(false); // Hide the scanner after successful scan
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-6">
       {/* Show the LoadingSpinner when loading is true */}
@@ -158,76 +166,73 @@ function MasterPage() {
               onClick={() => setShowMasterKey(!showMasterKey)}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-400 hover:text-gray-300"
             >
-              {showMasterKey ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                  <path
-                    fillRule="evenodd"
-                    d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z"
-                    clipRule="evenodd"
-                  />
-                  <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.064 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
-                </svg>
-              )}
+              {showMasterKey ? 'Hide' : 'Show'}
             </button>
           </div>
         </div>
 
         {/* User Details Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-gray-100">User Details</h2>
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">User Details</h2>
+          <div className="flex gap-2">
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-gray-500 text-gray-200 mb-4"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-gray-500 text-gray-200"
               placeholder="Enter username"
             />
-            <input
-              type="text"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-gray-500 text-gray-200"
-              placeholder="Enter phone number"
-            />
-          </div>
-
-          {/* Fetch Balance Section */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-gray-100">Fetch Balance</h2>
             <button
-              onClick={fetchBalance}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
-              disabled={loading}
+              type="button"
+              onClick={() => setShowScanner(true)}
+              className="bg-gray-700 text-white py-2 px-4 rounded-lg shadow-md hover:bg-gray-600 active:scale-95 transition-all duration-200"
             >
-              {loading ? 'Loading...' : 'Fetch Balance'}
+              Scan QR
             </button>
-            {balance !== null && (
-              <div className="mt-4">
-                <p className="text-gray-300">Balance: <span className="font-semibold text-gray-100">${balance}</span></p>
-                <p className="text-gray-300">Grade: <span className="font-semibold text-gray-100">{grade}</span></p>
-              </div>
-            )}
           </div>
+          <input
+            type="text"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-gray-500 text-gray-200 mt-4"
+            placeholder="Enter phone number"
+          />
+        </div>
+
+        {/* QR Code Scanner Modal */}
+        {showScanner && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-gray-800 p-6 rounded-2xl shadow-lg w-full max-w-lg mx-4 text-center">
+              <h3 className="text-xl md:text-2xl font-bold mb-4 text-gray-100">Scan QR Code</h3>
+              <div className="w-full h-auto max-w-sm mx-auto">
+                <QRCodeScanner onScan={handleScan} />
+              </div>
+              <button
+                onClick={() => setShowScanner(false)}
+                className="mt-4 bg-gray-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-gray-500 active:scale-95 transition-all duration-200"
+              >
+                Close Scanner
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Fetch Balance Section */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-100">Fetch Balance</h2>
+          <button
+            onClick={fetchBalance}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Fetch Balance'}
+          </button>
+          {balance !== null && (
+            <div className="mt-4">
+              <p className="text-gray-300">Balance: <span className="font-semibold text-gray-100">${balance}</span></p>
+              <p className="text-gray-300">Grade: <span className="font-semibold text-gray-100">{grade}</span></p>
+            </div>
+          )}
         </div>
 
         {/* Update Balance Section */}
@@ -306,35 +311,7 @@ function MasterPage() {
               onClick={() => setShowNewPassword(!showNewPassword)}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-400 hover:text-gray-300"
             >
-              {showNewPassword ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                  <path
-                    fillRule="evenodd"
-                    d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z"
-                    clipRule="evenodd"
-                  />
-                  <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.064 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
-                </svg>
-              )}
+              {showNewPassword ? 'Hide' : 'Show'}
             </button>
           </div>
           <button
