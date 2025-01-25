@@ -117,6 +117,12 @@ function BalancePage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-black text-white p-4">
+      {/* Header Section */}
+      <div className="text-center mb-6">
+        <h1 className="text-2xl md:text-4xl font-bold text-blue-700">Moataz</h1>
+        <p className="text-sm md:text-md text-gray-400 mt-2">Sometimes, they call him Yahya.</p>
+      </div>
+
       {/* Center Box */}
       <div className="bg-gray-800 p-6 md:p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 text-center relative">
         {/* Profile Button */}
